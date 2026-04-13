@@ -1,16 +1,18 @@
 export class DetailsPage extends HTMLElement {
   constructor() {
     super();
+    // attach a shadow DOM to the element for encapsulation and style isolation
+    this.root = this.attachShadow({ mode: 'open' });
   }
   // lifecycle method called when the element is added to the DOM
   connectedCallback() {
     const template = document.querySelector('#details-page-template');
     const clone = template.content.cloneNode(true);
-    this.appendChild(clone);
+    this.root.appendChild(clone);
   }
   // lifecycle method called when the element is removed from the DOM
   disconnectedCallback() {
-    this.innerHTML = '';
+    this.root.innerHTML = '';
   }
 }
 
