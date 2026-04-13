@@ -8,6 +8,10 @@ export class OrderPage extends HTMLElement {
     const clone = template.content.cloneNode(true);
     this.appendChild(clone);
   }
+  // lifecycle method called when the element is removed from the DOM
+  disconnectedCallback() {
+    this.innerHTML = '';
+  }
 }
 
 customElements.define('order-page', OrderPage);
