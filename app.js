@@ -1,6 +1,6 @@
 import { ROUTER } from './router/route.js';
 import { loadData } from './services/menu.js';
-import { STORE } from './services/store.js';
+import { proxyStore } from './services/store.js';
 
 // link to the web components
 import { MenuPage } from './components/MenuPage.js';
@@ -9,11 +9,11 @@ import { OrderPage } from './components/OrderPage.js';
 
 // global app object to hold the store and router
 window.app = {};
-app.store = STORE;
+app.store = proxyStore;
 app.router = ROUTER;
 
 // initialize the app when the DOM is ready
 window.addEventListener('DOMContentLoaded', async () => {
-  loadData();
+  await loadData();
   app.router.init();
 });
