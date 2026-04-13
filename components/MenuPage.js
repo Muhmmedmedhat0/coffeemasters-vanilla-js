@@ -3,6 +3,7 @@ export class MenuPage extends HTMLElement {
     super();
     // attach a shadow DOM to the element for encapsulation and style isolation
     this.root = this.attachShadow({ mode: 'open' });
+    this.onMenuChange = () => this.render();
   }
 
   // load css files asynchronously to avoid blocking the rendering of the page
@@ -27,33 +28,47 @@ export class MenuPage extends HTMLElement {
     this.render();
 
     // Re-render when menu data changes.
-    window.addEventListener('appmenuchange', () => this.render());
+    window.addEventListener('appmenuchange', this.onMenuChange);
   }
 
   render() {
-    if (app.store.menu) {
-      for (const category of app.store.menu) {
-        const listCategory = document.createElement('li');
-        listCategory.innerHTML = `
-					<h3>${category.name}</h3>
-					<ul class ='category'></ul>
+    const menuElement = this.root.querySelector('#menu');
+    if (!menuElement) {
+      return;
+    }
 
-				`;
-        this.root.querySelector('#menu').appendChild(listCategory);
-				category.products.forEach((product) => {
-					const item = document.createElement('li');
-					item.dataset.product = JSON.stringify(product);
-					listCategory.querySelector('ul').appendChild(item);
+    menuElement.replaceChildren();
 
-					// listCategory.querySelector('.category').appendChild(item);
-				});
+    if (!Array.isArray(app.store.menu) || app.store.menu.length === 0) {
+      const loadingItem = document.createElement('li');
+      loadingItem.textContent = 'Loading menu...';
+      menuElement.appendChild(loadingItem);
+      return;
+    }
+
+    for (const category of app.store.menu) {
+      const categoryItem = document.createElement('li');
+      const title = document.createElement('h3');
+      title.textContent = category.name;
+
+      const categoryList = document.createElement('ul');
+      categoryList.className = 'category';
+
+      for (const product of category.products || []) {
+        const productItem = document.createElement('product-item');
+        productItem.dataset.product = JSON.stringify(product);
+        categoryList.appendChild(productItem);
       }
+
+      categoryItem.appendChild(title);
+      categoryItem.appendChild(categoryList);
+      menuElement.appendChild(categoryItem);
     }
   }
 
   // lifecycle method called when the element is removed from the DOM
   disconnectedCallback() {
-    window.removeEventListener('appmenuchange', () => this.render());
+    window.removeEventListener('appmenuchange', this.onMenuChange);
     this.root.innerHTML = '';
   }
 }
