@@ -1,0 +1,11 @@
+import { BaseComponent } from './BaseComponent.js';
+
+export class OrderPage extends BaseComponent {
+  static styles = './components/OrderPage.css';
+
+  render() {
+    this.renderTemplate('#order-page-template');
+  }
+}
+
+customElements.define('order-page', OrderPage);

@@ -4,8 +4,19 @@ export class DetailsPage extends HTMLElement {
     // attach a shadow DOM to the element for encapsulation and style isolation
     this.root = this.attachShadow({ mode: 'open' });
   }
+  // load css files asynchronously to avoid blocking the rendering of the page
+  async loadStyles() {
+    const request = await fetch('./components/DetailsPage.css');
+    const cssText = await request.text();
+    const style = document.createElement('style');
+    style.textContent = cssText;
+    this.root.appendChild(style);
+  }
+
   // lifecycle method called when the element is added to the DOM
   connectedCallback() {
+    this.loadStyles();
+
     const template = document.querySelector('#details-page-template');
     const clone = template.content.cloneNode(true);
     this.root.appendChild(clone);
