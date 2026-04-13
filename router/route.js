@@ -47,6 +47,7 @@ export const ROUTER = {
           pageElement = document.createElement('details-page');
           const id = route.substring(route.lastIndexOf('-') + 1);
           pageElement.dataset.id = id;
+          pageElement.dataset.productId = id;
         }
         break;
     }

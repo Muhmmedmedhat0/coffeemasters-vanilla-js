@@ -16,9 +16,9 @@ export class ProductItem extends HTMLElement {
     this.querySelector('a').addEventListener('click', (event) => {
       console.log(event.target.tagName);
       if (event.target.tagName.toLowerCase() == 'button') {
-        //TODO
+        app.store.cart.push(product);
       } else {
-        app.router.go(`/product-${product.id}`);
+        app.router.goTo(`/product-${product.id}`);
       }
       event.preventDefault();
     });

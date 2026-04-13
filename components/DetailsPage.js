@@ -1,29 +1,51 @@
+import { getProductById } from '../services/menu.js';
+
 export class DetailsPage extends HTMLElement {
   constructor() {
     super();
-    // attach a shadow DOM to the element for encapsulation and style isolation
+
     this.root = this.attachShadow({ mode: 'open' });
-  }
-  // load css files asynchronously to avoid blocking the rendering of the page
-  async loadStyles() {
-    const request = await fetch('./components/DetailsPage.css');
-    const cssText = await request.text();
-    const style = document.createElement('style');
-    style.textContent = cssText;
-    this.root.appendChild(style);
+
+    const template = document.getElementById('details-page-template');
+    const content = template.content.cloneNode(true);
+    const styles = document.createElement('style');
+    this.root.appendChild(content);
+    this.root.appendChild(styles);
+
+    async function loadCSS() {
+      const request = await fetch('/components/DetailsPage.css');
+      styles.textContent = await request.text();
+    }
+    loadCSS();
   }
 
-  // lifecycle method called when the element is added to the DOM
+  async renderData() {
+    const productId = this.dataset.productId || this.dataset.id;
+
+    if (productId) {
+      this.product = await getProductById(productId);
+      if (!this.product) {
+        this.root.querySelector('h2').textContent = 'Product not found';
+        return;
+      }
+
+      this.root.querySelector('h2').textContent = this.product.name;
+      this.root.querySelector('img').src = `/data/images/${this.product.image}`;
+      this.root.querySelector('.description').textContent =
+        this.product.description;
+      this.root.querySelector('.price').textContent =
+        `$ ${this.product.price.toFixed(2)} ea`;
+      this.root.querySelector('button').addEventListener('click', () => {
+        // TODO addToCart(this.product.id);
+        app.router.goTo('/order');
+      });
+    } else {
+      this.root.querySelector('h2').textContent = 'Invalid Product ID';
+    }
+  }
+
   connectedCallback() {
-    this.loadStyles();
-
-    const template = document.querySelector('#details-page-template');
-    const clone = template.content.cloneNode(true);
-    this.root.appendChild(clone);
-  }
-  // lifecycle method called when the element is removed from the DOM
-  disconnectedCallback() {
-    this.root.innerHTML = '';
+    this.renderData();
   }
 }
 
