@@ -18,3 +18,17 @@ window.addEventListener('DOMContentLoaded', async () => {
   await loadData();
   app.router.init();
 });
+
+window.addEventListener('appcartchange', () => {
+  const badge = document.querySelector('#badge');
+  if (!badge) {
+    return;
+  }
+
+  const quantity = app.store.cart.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
+  badge.textContent = quantity > 0 ? quantity : '';
+  badge.hidden = quantity === 0;
+});
