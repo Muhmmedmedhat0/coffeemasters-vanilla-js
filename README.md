@@ -31,6 +31,7 @@ A fully-featured **Single Page Application (SPA)** built with **vanilla JavaScri
 **Coffee Masters** is a modern e-commerce application for ordering specialty coffee. It serves as a practical demonstration of building production-ready web applications using vanilla JavaScript, without relying on framework libraries like React, Vue, or Angular.
 
 The application showcases:
+
 - **Web Components** for reusable UI components
 - **Custom routing** with history API integration
 - **State management** via JavaScript Proxies
@@ -47,25 +48,28 @@ The application showcases:
 ✅ **Order Management** - Complete checkout with customer information validation  
 ✅ **Persistent State** - Cart state preserved across navigation  
 ✅ **Client-side Routing** - Smooth SPA navigation without page reloads  
-✅ **PWA Features** - Installable app, offline support ready  
+✅ **PWA Features** - Installable app, offline support ready
 
 ---
 
 ## ✨ Key Features
 
 ### 1. **Web Components Architecture**
+
 - Custom elements extending `BaseComponent` for consistent lifecycle management
 - Shadow DOM encapsulation for styling isolation
 - Light DOM mode for specific components (ProductItem, CartItem)
 - Template-based rendering with CSS isolation
 
 ### 2. **Advanced State Management**
+
 - **Proxy-based Store**: Reactive state management via JavaScript Proxies
 - **Event Emission**: Custom window events (`appmenuchange`, `appcartchange`) for component communication
 - **Cart Service**: OOP-based cart line and cart management with validation
 - **Checkout Service**: Customer validation and order processing logic
 
 ### 3. **Custom Router**
+
 - String-based routing with switch statement routing
 - Browser History API integration for back/forward navigation
 - Dynamic route parameters (e.g., `/product-{id}`)
@@ -73,6 +77,7 @@ The application showcases:
 - 404 fallback handling with query parameters
 
 ### 4. **OOP Services Layer**
+
 ```
 services/
 ├── store.js           → Proxy-based reactive store
@@ -84,6 +89,7 @@ services/
 ```
 
 ### 5. **Progressive Web App (PWA) Ready**
+
 - Web Manifest (`app.webmanifest`) with app metadata
 - PWA-optimized icons (1024x1024 and maskable 512x512)
 - Service Worker stub for caching and offline support
@@ -91,6 +97,7 @@ services/
 - Installable to home screen
 
 ### 6. **Component-Based UI**
+
 - **MenuPage**: Displays categorized product list
 - **DetailsPage**: Shows product details with add-to-cart functionality
 - **OrderPage**: Shopping cart and checkout interface
@@ -240,6 +247,7 @@ coffeemasters-vanilla-js/
 ## 🛠️ Technology Stack
 
 ### Core Technologies
+
 - **HTML5** - Semantic markup, templates
 - **CSS3** - Grid, Flexbox, custom properties
 - **JavaScript ES6+** - Modules, Classes, Async/Await
@@ -250,6 +258,7 @@ coffeemasters-vanilla-js/
   - Service Workers API (PWA)
 
 ### Browser APIs
+
 - **Custom Elements** - Define new HTML elements
 - **Shadow DOM** - CSS encapsulation
 - **History API** - Browser history management
@@ -258,6 +267,7 @@ coffeemasters-vanilla-js/
 - **Fetch API** - Asynchronous HTTP requests
 
 ### Architecture Patterns
+
 - **Component-Based Architecture** - Modular UI components
 - **Service Layer Pattern** - Separation of business logic
 - **Observer Pattern** - Event-driven communication
@@ -269,12 +279,14 @@ coffeemasters-vanilla-js/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** 18+ or **Python 3.7+** (for local development server)
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 
 ### Installation & Running
 
 #### Option 1: Using Python
+
 ```bash
 cd coffeemasters-vanilla-js
 python -m http.server 8000
@@ -282,6 +294,7 @@ python -m http.server 8000
 ```
 
 #### Option 2: Using Node.js
+
 ```bash
 cd coffeemasters-vanilla-js
 npx http-server -p 8000
@@ -289,12 +302,14 @@ npx http-server -p 8000
 ```
 
 #### Option 3: Using VS Code Live Server
+
 1. Install "Live Server" extension
 2. Right-click `index.html` → "Open with Live Server"
 
 ### Project Structure Overview
 
 The app initializes via:
+
 1. **index.html** loads `app.js` as a module
 2. **app.js** imports all components and initializes the app
 3. **DOMContentLoaded** event triggers app bootstrap:
@@ -313,19 +328,19 @@ Every page/component extends `BaseComponent`:
 
 ```javascript
 export class MenuPage extends BaseComponent {
-  static styles = './components/MenuPage.css';  // CSS file to load
-  
+  static styles = './components/MenuPage.css'; // CSS file to load
+
   onConnected() {
     // Hook called when component is mounted
     window.addEventListener('appmenuchange', this.handleChange);
   }
-  
+
   render() {
     // Required method - render component content
     this.renderTemplate('#menu-page-template');
     // ... more rendering logic
   }
-  
+
   onDisconnected() {
     // Hook called when component is unmounted
     window.removeEventListener('appmenuchange', this.handleChange);
@@ -336,6 +351,7 @@ customElements.define('menu-page', MenuPage);
 ```
 
 **Key Features:**
+
 - Automatic style loading and caching
 - Template rendering helpers
 - Shadow DOM support (encapsulation)
@@ -362,21 +378,23 @@ const handler = {
       window.dispatchEvent(new Event('appcartchange'));
     }
     return true;
-  }
+  },
 };
 
 export const proxyStore = new Proxy(STORE, handler);
 ```
 
 **Usage:**
+
 ```javascript
-app.store.cart = newCartItems;  // Triggers 'appcartchange' event
+app.store.cart = newCartItems; // Triggers 'appcartchange' event
 ```
 
 **Components listen:**
+
 ```javascript
 window.addEventListener('appcartchange', () => {
-  this.rerender();  // Re-render when cart changes
+  this.rerender(); // Re-render when cart changes
 });
 ```
 
@@ -390,19 +408,19 @@ class CartLine {
     this.product = product;
     this.quantity = CartLine.normalizeQuantity(quantity);
   }
-  
+
   increment(amount = 1) {
     this.quantity += CartLine.normalizeQuantity(amount);
   }
-  
+
   get subtotal() {
     return this.product.price * this.quantity;
   }
 }
 
 class Cart {
-  #lines = [];  // Private field
-  
+  #lines = []; // Private field
+
   get total() {
     return this.#lines.reduce((sum, line) => sum + line.subtotal, 0);
   }
@@ -440,17 +458,18 @@ export const ROUTER = {
     // Setup browser back/forward handling
     // Navigate to initial URL
   },
-  
+
   goTo: (route, addToHistory = true) => {
     // route examples: '/', '/order', '/product-11'
     // Create appropriate component
     // Replace main element content
     // Scroll to top
-  }
+  },
 };
 ```
 
 **Routing Examples:**
+
 - `/` → MenuPage (browse products)
 - `/order` → OrderPage (view cart & checkout)
 - `/product-11` → DetailsPage (view product details)
@@ -487,20 +506,20 @@ import { BaseComponent } from './BaseComponent.js';
 
 export class NewComponent extends BaseComponent {
   static styles = './components/NewComponent.css';
-  
+
   constructor() {
     super();
     this.onDataChange = () => void this.rerender();
   }
-  
+
   onConnected() {
     window.addEventListener('appdatachange', this.onDataChange);
   }
-  
+
   onDisconnected() {
     window.removeEventListener('appdatachange', this.onDataChange);
   }
-  
+
   render() {
     // Create or update DOM content
     const heading = document.createElement('h1');
@@ -551,9 +570,7 @@ case '/mynewpage':
 2. **Add navigation link** (`index.html`):
 
 ```html
-<a class="navlink" id="linkNew" href="/mynewpage">
-  New Page
-</a>
+<a class="navlink" id="linkNew" href="/mynewpage"> New Page </a>
 ```
 
 ### Updating Global State
@@ -563,10 +580,10 @@ case '/mynewpage':
 import { proxyStore } from './services/store.js';
 
 // Update menu
-app.store.menu = newMenuData;  // Fires 'appmenuchange'
+app.store.menu = newMenuData; // Fires 'appmenuchange'
 
 // Update cart
-app.store.cart = newCart;      // Fires 'appcartchange'
+app.store.cart = newCart; // Fires 'appcartchange'
 
 // Components listening will automatically rerender
 ```
@@ -630,6 +647,7 @@ console.log(cartService.getSummary());
 ### When to Use Vanilla JS vs Frameworks
 
 This project demonstrates that **vanilla JavaScript is sufficient for**:
+
 - ✅ Small to medium-sized applications
 - ✅ Learning web fundamentals
 - ✅ Applications with minimal dependencies
@@ -637,6 +655,7 @@ This project demonstrates that **vanilla JavaScript is sufficient for**:
 - ✅ Specific performance-critical sections
 
 **Consider frameworks when**:
+
 - ❌ Building large, complex applications
 - ❌ Need extensive ecosystem/plugins
 - ❌ Team unfamiliar with vanilla JS
