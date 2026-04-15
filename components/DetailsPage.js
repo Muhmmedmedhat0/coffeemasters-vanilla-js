@@ -38,7 +38,6 @@ export class DetailsPage extends HTMLElement {
         `$ ${this.product.price.toFixed(2)} ea`;
       this.root.querySelector('button').addEventListener('click', () => {
         addToCart(this.product.id);
-        app.router.goTo('/order');
       });
     } else {
       this.root.querySelector('h2').textContent = 'Invalid Product ID';
