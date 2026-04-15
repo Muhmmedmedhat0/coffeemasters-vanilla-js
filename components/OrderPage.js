@@ -1,6 +1,11 @@
 import './CartItem.js';
 
 export class OrderPage extends HTMLElement {
+  #user = {
+    name: '',
+    phone: '',
+    email: '',
+  };
   constructor() {
     super();
     // attach a shadow DOM to the element for encapsulation and style isolation
@@ -89,12 +94,60 @@ export class OrderPage extends HTMLElement {
     if (formTemplate) {
       section.appendChild(formTemplate.content.cloneNode(true));
     }
+    // set up the form bindings after rendering the form to ensure the #user object stays in sync with the form inputs
+    this.setFormBindings(this.root.querySelector('form'));
   }
 
   // lifecycle method called when the element is removed from the DOM
   disconnectedCallback() {
     window.removeEventListener('appcartchange', this.onCartChange);
     this.root.innerHTML = '';
+  }
+  // double data binding for the form inputs to keep the #user object in sync with the form values
+  setFormBindings(form) {
+    if (!form) {
+      return;
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      this.#user = {
+        name: form.elements.name.value.trim(),
+        phone: form.elements.phone.value.trim(),
+        email: form.elements.email.value.trim(),
+      };
+
+      console.log('Order submitted:', this.#user);
+      alert(`Thank you for your order, ${this.#user.name}!`);
+      // reset the form and user data after submission
+      this.#user = {
+        name: '',
+        phone: '',
+        email: '',
+      };
+      form.reset();
+      // TODO: send the order data to the server
+    });
+
+    this.#user = new Proxy(this.#user, {
+      set: (target, prop, value) => {
+        target[prop] = value;
+        if (form.elements[prop]) {
+          form.elements[prop].value = value;
+        }
+        return true;
+      },
+    });
+    Array.from(form.elements).forEach((element) => {
+      if (!element.name) {
+        return;
+      }
+
+      element.addEventListener('input', () => {
+        this.#user[element.name] = element.value;
+      });
+    });
   }
 }
 
