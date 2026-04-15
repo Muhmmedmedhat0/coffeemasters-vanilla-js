@@ -1,14 +1,8 @@
 # Coffee Masters - Vanilla JavaScript SPA
 
-A fully-featured **Single Page Application (SPA)** built with **vanilla JavaScript** (no frameworks!) demonstrating modern web development practices, progressive web app capabilities, and clean architecture patterns. This is a companion project to the [You Don't Need That Library][course] course on Frontend Masters.
+A fully-featured **Single Page Application (SPA)** built with **vanilla JavaScript** (no frameworks!) demonstrating modern web development practices, progressive web app capabilities, and clean architecture patterns.
 
-[![Frontend Masters](images/FrontendMastersLogo.png)][fem]
-
-**[Course Website][website]** | **[Frontend Masters][fem]** | **[Course Content][course]**
-
-[fem]: https://www.frontendmasters.com
-[website]: https://firtman.github.io/vanilla/
-[course]: https://frontendmasters.com/courses/vanilla-js-apps/
+This is a production-ready e-commerce application for ordering specialty coffee, showcasing best practices in vanilla JS development without relying on frameworks like React, Vue, or Angular.
 
 ---
 
@@ -713,14 +707,25 @@ The TODO in `router/route.js` outlines potential enhancements:
 
 ## 📝 License
 
-This project is part of the Frontend Masters "You Don't Need That Library" course.
+This project is open source and available under the MIT License.
 
 ---
 
 ## 🤝 Contributing
 
-This is an educational project. For improvements or suggestions, refer to the course materials on [Frontend Masters][course].
+Contributions are welcome! Feel free to:
+
+- Report issues and bugs
+- Suggest new features and improvements
+- Submit pull requests with enhancements
+- Improve documentation
 
 ---
 
-**Happy Learning! 🚀☕**
+## 👨‍💻 Author
+
+Built as a demonstration of vanilla JavaScript capabilities for modern web applications.
+
+---
+
+**Enjoy building with vanilla JS! 🚀☕**
