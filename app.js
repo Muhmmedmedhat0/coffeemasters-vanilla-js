@@ -1,6 +1,7 @@
 import { ROUTER } from './router/route.js';
 import { loadData } from './services/menu.js';
 import { proxyStore } from './services/store.js';
+import { getCartSummary } from './services/order.js';
 
 // link to the web components
 import { MenuPage } from './components/MenuPage.js';
@@ -26,10 +27,7 @@ window.addEventListener('appcartchange', () => {
     return;
   }
 
-  const quantity = app.store.cart.reduce(
-    (total, item) => total + item.quantity,
-    0,
-  );
+  const quantity = getCartSummary().totalQuantity;
   badge.textContent = quantity > 0 ? quantity : '';
   badge.hidden = quantity === 0;
 });

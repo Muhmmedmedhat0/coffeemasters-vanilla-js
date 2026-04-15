@@ -1,27 +1,42 @@
+import { BaseComponent } from './BaseComponent.js';
 import { addToCart } from '../services/order.js';
 
-export class ProductItem extends HTMLElement {
-  constructor() {
-    super();
+export class ProductItem extends BaseComponent {
+  static useShadow = false;
+
+  get product() {
+    try {
+      return JSON.parse(this.dataset.product || 'null');
+    } catch {
+      return null;
+    }
   }
 
-  connectedCallback() {
-    const template = document.getElementById('product-item-template');
-    const content = template.content.cloneNode(true);
+  render() {
+    const product = this.product;
+    if (!product) {
+      return;
+    }
 
-    this.appendChild(content);
+    this.renderTemplate('#product-item-template');
 
-    const product = JSON.parse(this.dataset.product);
     this.querySelector('h4').textContent = product.name;
     this.querySelector('p.price').textContent = `$${product.price.toFixed(2)}`;
     this.querySelector('img').src = `data/images/${product.image}`;
-    this.querySelector('a').addEventListener('click', (event) => {
-      if (event.target.tagName.toLowerCase() == 'button') {
-        addToCart(product.id);
+
+    const link = this.querySelector('a');
+    if (!link) {
+      return;
+    }
+
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      if (event.target instanceof Element && event.target.closest('button')) {
+        void addToCart(product.id);
       } else {
         app.router.goTo(`/product-${product.id}`);
       }
-      event.preventDefault();
     });
   }
 }

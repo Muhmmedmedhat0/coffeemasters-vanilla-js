@@ -1,31 +1,37 @@
+import { BaseComponent } from './BaseComponent.js';
 import { removeFromCart } from '../services/order.js';
 
-export class CartItem extends HTMLElement {
-  constructor() {
-    super();
+export class CartItem extends BaseComponent {
+  static useShadow = false;
+
+  get item() {
+    try {
+      return JSON.parse(this.dataset.item || 'null');
+    } catch {
+      return null;
+    }
   }
 
-  connectedCallback() {
-    const item = JSON.parse(this.dataset.item || '{}');
-    if (!item.product) {
+  render() {
+    const item = this.item;
+    if (!item?.product) {
       return;
     }
 
-    this.innerHTML = ''; // Clear the element
+    this.renderTemplate('#cart-item-template');
 
-    const template = document.getElementById('cart-item-template');
-    const content = template.content.cloneNode(true);
-
-    this.appendChild(content);
-
-    this.querySelector('.qty').textContent = `${item.quantity}x`;
+    this.querySelector('.qty').textContent = `${Number(item.quantity || 0)}x`;
     this.querySelector('.name').textContent = item.product.name;
     this.querySelector('.price').textContent =
-      `$${item.product.price.toFixed(2)}`;
-    this.querySelector('a.delete-button').addEventListener('click', (event) => {
-      event.preventDefault();
-      removeFromCart(item.product.id);
-    });
+      `$${Number(item.product.price || 0).toFixed(2)}`;
+
+    const deleteButton = this.querySelector('a.delete-button');
+    if (deleteButton) {
+      deleteButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        removeFromCart(item.product.id);
+      });
+    }
   }
 }
 

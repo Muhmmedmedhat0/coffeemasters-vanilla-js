@@ -1,37 +1,26 @@
-export class MenuPage extends HTMLElement {
+import { BaseComponent } from './BaseComponent.js';
+
+export class MenuPage extends BaseComponent {
+  static styles = './components/MenuPage.css';
+
   constructor() {
     super();
-    // attach a shadow DOM to the element for encapsulation and style isolation
-    this.root = this.attachShadow({ mode: 'open' });
-    this.onMenuChange = () => this.render();
+    this.onMenuChange = () => {
+      void this.rerender();
+    };
   }
 
-  // load css files asynchronously to avoid blocking the rendering of the page
-  async loadStyles() {
-    const request = await fetch('./components/MenuPage.css');
-    const cssText = await request.text();
-    const style = document.createElement('style');
-    style.textContent = cssText;
-    this.root.appendChild(style);
-  }
-
-  // lifecycle method called when the element is added to the DOM
-  connectedCallback() {
-    this.loadStyles();
-    const template = document.querySelector('#menu-page-template');
-    if (!template) {
-      return;
-    }
-
-    const clone = template.content.cloneNode(true);
-    this.root.appendChild(clone);
-    this.render();
-
-    // Re-render when menu data changes.
+  onConnected() {
     window.addEventListener('appmenuchange', this.onMenuChange);
   }
 
+  onDisconnected() {
+    window.removeEventListener('appmenuchange', this.onMenuChange);
+  }
+
   render() {
+    this.renderTemplate('#menu-page-template');
+
     const menuElement = this.root.querySelector('#menu');
     if (!menuElement) {
       return;
@@ -64,12 +53,6 @@ export class MenuPage extends HTMLElement {
       categoryItem.appendChild(categoryList);
       menuElement.appendChild(categoryItem);
     }
-  }
-
-  // lifecycle method called when the element is removed from the DOM
-  disconnectedCallback() {
-    window.removeEventListener('appmenuchange', this.onMenuChange);
-    this.root.innerHTML = '';
   }
 }
 
